@@ -1,0 +1,44 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+st.set_page_config(page_title="المدينة الذكية", layout="wide")
+
+st.title("🧠 نظام إدارة المدينة الذكية (محاكاة)")
+
+st.subheader("🚦 1. محاكاة حركة المرور")
+col1, col2 = st.columns(2)
+
+with col1:
+    street_a = st.slider("عدد السيارات في شارع A", 10, 150, 30)
+with col2:
+    street_b = st.slider("عدد السيارات في شارع B", 10, 150, 100)
+
+total = street_a + street_b
+time_a = int((street_a / total) * 90) if total > 0 else 45
+time_b = 90 - time_a
+
+df = pd.DataFrame({
+    'الشارع': ['شارع A', 'شارع B'],
+    'وقت الإشارة الخضراء (ثانية)': [time_a, time_b]
+})
+
+fig = px.bar(df, x='الشارع', y='وقت الإشارة الخضراء (ثانية)', color='الشارع', text='وقت الإشارة الخضراء (ثانية)')
+st.plotly_chart(fig, use_container_width=True)
+
+st.divider()
+
+st.subheader("🔐 2. اختبار الأمن السيبراني (Zero Trust)")
+
+command = st.selectbox("اختر أمراً لإرساله للنظام:", [
+    "عرض حالة الطرق",
+    "تعديل توقيت إشارة يدويًا",
+    "إيقاف نظام الحماية بالكامل"
+])
+if st.button("إرسال الأمر"):
+    if command == "عرض حالة الطرق":
+        st.success("✅ تم تنفيذ الأمر: حالة الطرق ممتازة.")
+    elif command == "تعديل توقيت إشارة يدويًا":
+        st.warning("⚠️ يرجى إدخال رمز المصادقة (MFA) للتعديل اليدوي.")
+    elif command == "إيقاف نظام الحماية بالكامل":
+        st.error("🚨 تم رفض الأمر! تنبيه أمني: محاولة تحكم غير مصرح بها. يتطلب الأمر تحققاً متعدد العوامل وموافقة المشرف.")
